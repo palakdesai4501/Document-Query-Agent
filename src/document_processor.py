@@ -18,7 +18,7 @@ def extract_text_from_pdf(pdf_path):
 
 
 if __name__ == "__main__":
-    pdf_path = "data/sample.pdf"
+    pdf_path = "documents/sample.pdf"
     pages = extract_text_from_pdf(pdf_path)
     for i, page_text in enumerate(pages):
         print(f"\n--- Page {i+1} ---")
