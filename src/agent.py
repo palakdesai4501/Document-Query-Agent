@@ -1,7 +1,7 @@
 # agent.py
-from document_processor import extract_text_from_pdf
-from embeddings_generator import create_embeddings
-from vector_store import create_faiss_index, search_faiss_index
+from src.document_processor import extract_text_from_pdf
+from src.embeddings_generator import create_embeddings
+from src.vector_store import create_faiss_index, search_faiss_index
 from langchain_community.llms import Ollama # For interacting with local Ollama LLM
 import os # For checking file existence
 
@@ -9,14 +9,13 @@ import os # For checking file existence
 document_texts = []
 document_embeddings = None
 faiss_index = None
-embedding_model = None
 llm = None
 
 def initialize_agent(pdf_path, llm_model_name="llama3"):
     """
     Initializes the AI agent by processing the document and setting up the LLM.
     """
-    global document_texts, document_embeddings, faiss_index, embedding_model, llm
+    global document_texts, document_embeddings, faiss_index, llm
 
     print(f"Initializing agent with document: {pdf_path}")
     
@@ -44,13 +43,14 @@ def query_agent(query):
     """
     Queries the agent about the document content using RAG.
     """
-    if llm is None or faiss_index is None or embedding_model is None:
+    if llm is None or faiss_index is None or document_texts is None:
         return "Agent not initialized. Please run initialize_agent() first and ensure Ollama is running."
 
     print(f"\nUser Query: {query}")
 
-    # 1. Create embedding for the query
-    query_embedding = embedding_model.encode([query]).astype('float32')[0]
+    # 1. Create embedding for the query (initialize model if needed)
+    from src.embeddings_generator import create_embeddings
+    query_embedding = create_embeddings([query]).astype('float32')[0]
 
     # 2. Search for relevant document chunks
     distances, indices = search_faiss_index(faiss_index, query_embedding, k=2) # Get top 2 relevant chunks

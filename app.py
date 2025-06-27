@@ -1,6 +1,6 @@
 # app.py
 import streamlit as st
-from agent import initialize_agent, query_agent, llm # Import shared components and LLM status
+from src.agent import initialize_agent, query_agent, llm # Import shared components and LLM status
 import os
 
 # Streamlit page configuration
